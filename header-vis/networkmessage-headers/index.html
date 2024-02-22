@@ -1,0 +1,100 @@
+<!Doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPC UA PubSub NetworkMessage Header</title>
+    <style>
+        body {
+            font-family: "Ubuntu", sans-serif;
+        }
+        .error-text {
+            color: firebrick;
+        }
+        input[type="text"], textarea {
+            font-family: "Ubuntu Mono", "Consolas", monospace;
+            width: calc(100% - 2rem);
+            box-sizing: border-box;
+            margin: 1rem;
+            font-size: 3rem;
+        }
+
+        .nwmsg-header {
+            background-color: #c6e9e9;
+        }
+        .group-header {
+            background-color: #ed9c9c;
+        }
+        .payload-header {
+            background-color: #afa6e6;
+        }
+        .security-header {
+            background-color: #c2ed82;
+        }
+        .payload {
+            background-color: #fabafc;
+        }
+        pre {
+            font-size: 1.2rem;
+        }
+
+        .header-section {
+            margin: 0 1rem;
+            padding: 0.5rem 2rem;
+        }
+        .header-section header {
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .header-section h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .header-section .expand-icon::before {
+            content: "";
+            position: absolute;
+            right: 0.6rem;
+            top: 0.7rem;
+            display: block;
+            border: 0.6rem solid transparent;
+            border-top-color: black;
+            transform: translateY(30%);
+        }
+        .header-section.expanded .expand-icon::before {
+            transform: rotate(180deg) translateY(50%);
+        }
+        .header-section main {
+            display: none;
+        }
+        .header-section.expanded main {
+            display: block;
+        }
+
+        .visualization strong {
+            margin-right: 0.5rem;
+        }
+
+        .visualization ul {
+            display: table;
+            list-style-type: none;
+        }
+        .visualization ul > li {
+            display: table-row;
+        }
+        .visualization ul > li strong,
+        .visualization ul > li span {
+            display: table-cell;
+            padding: 0.3rem 0.5rem;
+            border-bottom: 1px solid black;
+        }
+        .visualization ul > li strong {
+            padding-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="headers-app"></div>
+
+    <script type="module" src="headers.js"></script>
+</body>
+</html>
