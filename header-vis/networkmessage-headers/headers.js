@@ -1,4 +1,4 @@
-import { parse } from "./parse.js"
+import { parse } from "./parse.mjs"
 import { is_undefined } from "./util.js"
 import { render, use_state } from "../sfui.js"
 
@@ -61,6 +61,7 @@ const Visualize = () => {
     const output = [ "div", { className: "visualization" } ];
 
     const [msg, err] = parse(val); 
+    //console.log("msg", msg);
     if (err) {
         output.push([ Error, { value: h_val, err } ]);
     }
@@ -356,8 +357,41 @@ const VisSecurityNonce = ({len, content}) => {
 };
 
 const VisPayload = ({value}) =>
-    [ "pre"
-    , render_input(value ?? "")
+    [ "section"
+    , [ "p"
+      , [ "strong", "Sizes:" ]
+      , value.sizes.map(s => s.toString()).join(", ")]
+    , ...( value.messages.map(m => [VisDataSetMessage, {message: m}]) )
+    ];
+
+const VisDataSetMessage = ({message}) =>
+    [ "div"
+    , [ "section"
+      , [ "p" , [ "strong", "DataSetFlags1:" ] ]
+      , [ "ul"
+        , [ "li"
+            , [ "strong", "Is Valid:" ]
+            , [ "span", message.flags_1.valid ? "valid (1)" : "invalid (0)" ]
+        ]
+        , [ "li"
+            , [ "strong", "Field Encoding:" ]
+            , [ "span", message.flags_1.field_encoding ]
+        ]
+        , [ "li"
+            , [ "strong", "ConfigurationVersionMajorVersion:" ]
+            , [ "span", message.configuration_major_version ? "enabled (1)" : "disabled (0)" ]
+        ]
+        , [ "li"
+            , [ "strong", "ConfigurationVersionMinorVersion:" ]
+            , [ "span", message.configuration_minor_version ? "enabled (1)" : "disabled (0)" ]
+        ]
+        , [ "li"
+            , [ "strong", "DataSetFlags2:" ]
+            , [ "span", message.flags_1.flags_2 ? "enabled (1)" : "disabled (0)" ]
+          ]
+        ]
+      ]
+        // TODO: visualize the other fields
     ];
 
 const Error = ({value, err}) =>
