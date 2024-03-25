@@ -13,10 +13,103 @@
         }
         input[type="text"], textarea {
             font-family: "Ubuntu Mono", "Consolas", monospace;
-            width: calc(100% - 2rem);
+            width: calc(100% - 1rem);
             box-sizing: border-box;
-            margin: 1rem;
+            margin: 1rem 1rem 1rem 0;
             font-size: 3rem;
+        }
+        .loading-splash-wrap {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .loading-splash {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f1f1f1;
+            border-radius: 0.4rem;
+            padding: 1rem 2rem 2.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-splash-spinner {
+            text-align: center;
+            padding-bottom: 0.8rem;
+            font-size: 4rem;
+            animation-name: spin;
+            animation-iteration-count: infinite;
+            animation-duration: 1s;
+            animation-timing-function: linear;
+        }
+        .loading-splash-text {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .page {
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+        }
+        .page > main {
+            flex-grow: 1;
+        }
+
+        .file-import {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .file-import label {
+            margin-right: 1rem;
+        }
+        .packet-sidebar {
+            padding: 1rem;
+            background-color: #dde5f7;
+            max-height: 100vh;
+            overflow-y: scroll;
+        }
+        .packet-sidebar > button {
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 100%;
+            height: 2rem;
+        }
+        .packet-sidebar fieldset {
+            border: 0;
+            padding: 0;
+        }
+        .packet-select {
+            list-style-type: none;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        .packet-select li {
+            user-select: none;
+        }
+        .packet-select li {
+            padding: 0.3rem 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .packet-select label:nth-child(2n+1) li {
+            background-color: rgba(255,255,255,0.7);
+        }
+        .packet-select li:has(input:checked),
+        .packet-select label li:hover {
+            background-color: rgba(5, 28, 117, 0.6);
+            color: #ffffff;
+        }
+        .packet-select input {
+            display: none;
         }
 
         .nwmsg-header {
@@ -45,6 +138,7 @@
         .header-section header {
             position: relative;
             padding: 0.5rem 0;
+            cursor: pointer;
         }
         .header-section h2 {
             margin: 0;
@@ -90,11 +184,26 @@
         .visualization ul > li strong {
             padding-right: 0.5rem;
         }
+
+        .field {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            border: 2px solid rgba(0,0,0,0.75);
+            margin-bottom: 0.5rem;
+        }
+        .field > p {
+            margin: 0;
+            padding: 1rem 1.6rem 1rem 1rem;
+        }
+        .field > p:first-child {
+            background-color: #e380e6;
+        }
     </style>
 </head>
 <body>
     <div id="headers-app"></div>
 
-    <script type="module" src="headers.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 import { parse } from "./parse.mjs"
 import { is_undefined } from "./util.js"
-import { render, use_state } from "../sfui.js"
+import { use_state } from "../sfui.js"
 
-const HeaderInput = () => {
+// test packet: 71 2a 03 14 00 01 00 00 00 01 14 00 01 03 00 0b 00 00 00 00 00 00 00 00 01 00 01 00
+
+export const HeaderInput = () => {
     const [h_val, set_header] = use_state("header_input", 0, "");
     const [cur_pos, set_cur_pos] = use_state("cursor_pos", 0, "");
 
@@ -55,7 +57,7 @@ const HeaderSection = ({key, title, className}, ...children) => {
     );
 }
 
-const Visualize = () => {
+export const Visualize = () => {
     const [h_val] = use_state("header_input", 0, "");
     const val = h_val.replaceAll(" ", "")
     const output = [ "div", { className: "visualization" } ];
@@ -98,7 +100,7 @@ const Visualize = () => {
     }
 
 
-    // Payload
+    // Payload Header
     const h_payload = [ HeaderSection, { key: 2, title: "Payload Header", className: "payload-header" } ]
     if (msg.version_flags?.payload_header && msg.payload_message_count) {
         output.push(h_payload);
@@ -391,8 +393,49 @@ const VisDataSetMessage = ({message}) =>
           ]
         ]
       ]
+    , [ "section"
+      , [ "p" , [ "strong", "FieldCount:" ], [ "span", `${message.field_count}` ]]
+      ]
+    , ...(message.fields.map(f => [ VisField, { field: f, encoding: message.flags_1.field_encoding } ])) 
         // TODO: visualize the other fields
     ];
+
+const VisField = ({encoding, field}) => {
+    const vis_func = {
+        "Variant": VisVariant
+    }[encoding];
+
+    return vis_func ? ([ vis_func, { encoding, field } ]) : false;
+}
+
+const VisVariant = ({ field }) =>
+    [ "div", { className: "field" }
+    , [ "p"
+      , [ "strong", "EncodingMask" ]
+      , [ "ul"
+        , [ "li"
+          , [ "strong", "TypeId" ]
+          , [ "span", `${field.encoding_mask.type_id}` ]
+          ]
+        , [ "li"
+          , [ "strong", "ArrayDimensions" ]
+          , [ "span", field.encoding_mask.array_dimensions ? "enabled (1)" : "disabled (0)" ]
+          ]
+        , [ "li"
+          , [ "strong", "Is Array" ]
+          , [ "span", field.encoding_mask.array_dimensions ? "yes (1)" : "no (0)" ]
+          ]
+        ]
+      ]
+    , [ "p"
+      , [ "strong", "DataType: " ]
+      , [ "span", field.data.type ]
+      , [ "br" ]
+      , [ "strong", "Value: " ]
+        // TODO: this only works for very basic types
+      , [ "span", `${field.data.value}` ]
+      ]
+    ]
 
 const Error = ({value, err}) =>
     [ "section", {className: "error"}
@@ -405,16 +448,5 @@ const Error = ({value, err}) =>
       , [ "strong", value.substring(err.position, err.position + err.length) ?? "" ]
       , [ "span", value.substring(err.position + err.length) ?? "" ]
       ]
-    ]
-
-
-
-
-const App = () =>
-    [ "div", {}
-      , ["h1", "OPC UA PubSub NetworkMessage Inspector"]
-      , [ HeaderInput ]
-      , [ Visualize ]
     ];
-render([App], document.getElementById("headers-app"));
 
