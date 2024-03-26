@@ -17,7 +17,9 @@ const App = () =>
     [ "div", {}
     , [ "header", { className: "page-header"}
       , ["h1", "OPC UA PubSub NetworkMessage Inspector"]
-      , [ FileImport ]
+      , [ "div", { className: "file-import-wrap" }
+        , [ FileImport ]
+        ]
       ]
     , [ "div", { className: "page" }
       , [ PacketSidebar ]

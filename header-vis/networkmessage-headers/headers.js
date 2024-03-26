@@ -57,12 +57,34 @@ const HeaderSection = ({key, title, className}, ...children) => {
     );
 }
 
+function array_equals_shallow(a1, a2) {
+    if (a1.length !== a2.length) return false;
+    for (let i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) return false;
+    }
+    return true;
+}
+
+function memo(fn) {
+    let last_input, last_output;
+    return (...args) => {
+        if (last_input && array_equals_shallow(last_input, args)) {
+            return last_output;
+        } else {
+            last_input = args;
+            return last_output = fn(...args);
+        }
+    }
+}
+const memo_parse = memo(parse);
+
 export const Visualize = () => {
     const [h_val] = use_state("header_input", 0, "");
     const val = h_val.replaceAll(" ", "")
     const output = [ "div", { className: "visualization" } ];
 
-    const [msg, err] = parse(val); 
+    const [msg, err] = memo_parse(val); 
+
     //console.log("msg", msg);
     if (err) {
         output.push([ Error, { value: h_val, err } ]);
@@ -394,9 +416,9 @@ const VisDataSetMessage = ({message}) =>
         ]
       ]
     , [ "section"
-      , [ "p" , [ "strong", "FieldCount:" ], [ "span", `${message.field_count}` ]]
+      , [ "p", [ "strong", "FieldCount:" ], [ "span", `${message.field_count}` ]]
+      , ...(message.fields.map(f => [ VisField, { field: f, encoding: message.flags_1.field_encoding } ])) 
       ]
-    , ...(message.fields.map(f => [ VisField, { field: f, encoding: message.flags_1.field_encoding } ])) 
         // TODO: visualize the other fields
     ];
 
@@ -409,7 +431,7 @@ const VisField = ({encoding, field}) => {
 }
 
 const VisVariant = ({ field }) =>
-    [ "div", { className: "field" }
+    [ "div", { className: "field", data: { "content": JSON.stringify(field) } }
     , [ "p"
       , [ "strong", "EncodingMask" ]
       , [ "ul"

@@ -111,13 +111,15 @@ export function parse(str) {
         if (e = advance(result.security_nonce_len * 2)) return [result, e];
     }
 
-    const [payload, payload_err] = parse_payload(result.payload_message_count, str.substring(0));
+    const [payload, payload_err, prog] = parse_payload(result.payload_message_count, str);
     if (!is_undefined(payload_err)) {
         result.payload = str
         return [result, { ...payload_err, position: payload_err.position + progress }];
     }
+    if (e = advance(prog)) return [result, e];
+
     result.payload = payload;
-    console.log(result);
+    console.log(result, "remainder", str);
 
 
     return [result, undefined];
@@ -320,9 +322,9 @@ function parse_dataset_message(str) {
 
         const type = opc_datatypes[mask.type_id];
 
-        const [value, ok] = type.conversion_func(str.substring(0, type.length));
+        const [value, ok] = type.conversion_func(str.substring(0, type.length * 2));
         if (!ok) return [result, err(`Could not parse variant of type ${type.name}!`, 4), progress];
-        if (e = advance(type.length)) return [result, e, progress];
+        if (e = advance(type.length * 2)) return [result, e, progress];
 
         result.fields[i].data = {
             type: type.name,
@@ -476,7 +478,7 @@ export const opc_datatypes = {
         length: 1,
         conversion_func: (val) => {
             const res = parseInt(val, 16);
-            return [res, !isNaN(res)];;
+            return [res !== 0, !isNaN(res)];;
         },
     },
     2: {

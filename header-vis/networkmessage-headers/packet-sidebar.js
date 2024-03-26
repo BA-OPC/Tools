@@ -28,15 +28,26 @@ export const FileImport =  () => {
                 });
         }
     };
+    const ondragover = (e) => {
+        e.preventDefault();
+        return false;
+    }
+    const ondrop = (e) => {
+        e.preventDefault();
+        const el = document.getElementById(e.target.htmlFor);
+        el.files = e.dataTransfer.files;
+        el.dispatchEvent(new Event("change"));
+        return false;
+    }
 
     return (
-    [ "div", { className: "file-import" }
-    , [ "label", { htmlFor: "input-file" }, "Import Packet Dissection (json)" ]
+    [ "label", { htmlFor: "input-file", className: "file-import", ondrop, ondragover }
+    , [ "span", "Import Packet Dissection (json)" ]
     , [ "input", {
-        id: "input-file",
-        type: "file",
-        accept: ".json,application/json",
-        onchange
+         id: "input-file",
+         type: "file",
+         accept: ".json,application/json",
+         onchange,
       } ]
     ]
     );
